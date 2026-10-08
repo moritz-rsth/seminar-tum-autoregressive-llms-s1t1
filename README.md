@@ -1,19 +1,19 @@
 # Autoregressive LLMs and Dense Transformer Baselines
 
-**[▶ Open the slides](https://moritz-rsth.github.io/autoregressive-llms/)** · 55 slides · one self-contained HTML file · works offline
+**[▶ Open the slides](https://moritz-rsth.github.io/seminar-tum-autoregressive-llms-s1t1/)** · 55 slides · one self-contained HTML file · works offline
 
 The opening talk (S1-T1) of the TUM *LLM Architectures and Inference* seminar, given on 7 October 2026. It follows one sentence, *"The Eiffel Tower is located in the city of ___"*, through a decoder-only Transformer: tokenizer → embedding → position → attention → MLP → norm → unembedding → softmax → *Paris*. It then shows that Llama 3, Mistral 7B and Qwen3 are the 2017 recipe with a few swapped parts.
 
-[![Title slide](.github/preview/01-title.jpg)](https://moritz-rsth.github.io/autoregressive-llms/)
+[![Title slide](.github/preview/01-title.jpg)](https://moritz-rsth.github.io/seminar-tum-autoregressive-llms-s1t1/)
 
 ## What's inside the deck
 
 | | |
 |---|---|
-| [![Live tokenizer](.github/preview/02-live-tokenizer.jpg)](https://moritz-rsth.github.io/autoregressive-llms/) | **A live in-browser tokenizer.** Type any text and see the real Llama 3 and GPT-4o (`o200k_base`) tokens and IDs. Both BPE tokenizers are bundled into the page, with no server. |
-| [![Attention](.github/preview/03-attention.jpg)](https://moritz-rsth.github.io/autoregressive-llms/) | **Attention, built up on one example.** It goes from query/key dot products and the causal mask to softmax and multi-head attention, with the math typeset by KaTeX at build time. |
-| [![Measured](.github/preview/04-measured.jpg)](https://moritz-rsth.github.io/autoregressive-llms/) | **Measured on a laptop, not quoted from a paper.** With the KV cache, decode is about 9× faster. Prefill is 43× more efficient per token than decode. See [`experiments/`](experiments). |
-| [![Real configs](.github/preview/05-real-configs.jpg)](https://moritz-rsth.github.io/autoregressive-llms/) | **The real `config.json` of Qwen3-8B.** Every concept from the talk is highlighted, and you can click a field to get a short explanation. |
+| [![Live tokenizer](.github/preview/02-live-tokenizer.jpg)](https://moritz-rsth.github.io/seminar-tum-autoregressive-llms-s1t1/) | **A live in-browser tokenizer.** Type any text and see the real Llama 3 and GPT-4o (`o200k_base`) tokens and IDs. Both BPE tokenizers are bundled into the page, with no server. |
+| [![Attention](.github/preview/03-attention.jpg)](https://moritz-rsth.github.io/seminar-tum-autoregressive-llms-s1t1/) | **Attention, built up on one example.** It goes from query/key dot products and the causal mask to softmax and multi-head attention, with the math typeset by KaTeX at build time. |
+| [![Measured](.github/preview/04-measured.jpg)](https://moritz-rsth.github.io/seminar-tum-autoregressive-llms-s1t1/) | **Measured on a laptop, not quoted from a paper.** With the KV cache, decode is about 9× faster. Prefill is 43× more efficient per token than decode. See [`experiments/`](experiments). |
+| [![Real configs](.github/preview/05-real-configs.jpg)](https://moritz-rsth.github.io/seminar-tum-autoregressive-llms-s1t1/) | **The real `config.json` of Qwen3-8B.** Every concept from the talk is highlighted, and you can click a field to get a short explanation. |
 
 Navigate with **← / →** or **space**, or click the section pills at the bottom. The page is a single 7 MB HTML file with all images, fonts and scripts inlined, so you can download [`index.html`](index.html) and present it offline.
 
