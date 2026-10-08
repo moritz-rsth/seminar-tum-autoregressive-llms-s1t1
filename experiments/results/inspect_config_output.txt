@@ -1,0 +1,59 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+HF_HOME = /Users/moritzrosenthal/Desktop/everything/TUM/Seminar 2026/Presentation S1-T1/practical/hf_cache
+
+Fetching config.json files ...
+  [skip] meta-llama/Llama-3.2-1B: GatedRepoError: 401 Client Error. (Request ID: Root=1-6ab79079-68b1b0fe5e752bd35034326b;116c3834-f008-42a0-a457-02aa29a7115c)
+
+=== 1. Configuration comparison ===
+field                           Qwen3-0.6B            Qwen3-1.7B              Qwen3-8B       Mistral-7B-v0.1
+model_type                           qwen3                 qwen3                 qwen3               mistral
+layers                                  28                    28                    36                    32
+hidden (d_model)                      1024                  2048                  4096                  4096
+FFN intermediate                      3072                  6144                 12288                 14336
+query heads                             16                    16                    32                    32
+KV heads                                 8                     8                     8                     8
+head_dim                               128                   128                   128                   128
+vocab                               151936                151936                151936                 32000
+max positions                        40960                 40960                 40960                 32768
+rope_theta                         1000000               1000000               1000000               10000.0
+rms_norm_eps                         1e-06                 1e-06                 1e-06                 1e-05
+tie embeddings                        True                  True                 False                 False
+activation                            silu                  silu                  silu                  silu
+sliding_window                        None                  None                  None                  4096
+use_sliding_window                   False                 False                 False                     -
+attention_bias                       False                 False                 False                     -
+stored dtype                      bfloat16              bfloat16              bfloat16              bfloat16
+GQA ratio (Q/KV)                         2                     2                     4                     4
+Q-proj width H*hd                     2048                  2048                  4096                  4096
+
+=== 2. Parameter breakdown (analytic, from config) ===
+component                       Qwen3-0.6B            Qwen3-1.7B              Qwen3-8B       Mistral-7B-v0.1
+embedding                  155.6 M (26.1%)       311.2 M (18.1%)       622.3 M ( 7.6%)       131.1 M ( 1.8%)
+lm_head (untied)             0.0 M ( 0.0%)         0.0 M ( 0.0%)       622.3 M ( 7.6%)       131.1 M ( 1.8%)
+attention                  176.2 M (29.6%)       352.3 M (20.5%)       1.510 B (18.4%)       1.342 B (18.5%)
+MLP                        264.2 M (44.3%)       1.057 B (61.4%)       5.436 B (66.4%)       5.637 B (77.8%)
+norms                        0.1 M ( 0.0%)         0.1 M ( 0.0%)         0.3 M ( 0.0%)         0.3 M ( 0.0%)
+TOTAL                     596.0 M (100.0%)      1.721 B (100.0%)      8.191 B (100.0%)      7.242 B (100.0%)
+non-embedding              440.5 M (73.9%)       1.409 B (81.9%)       6.946 B (84.8%)       6.980 B (96.4%)
+bf16 weight size                  1.11 GiB              3.20 GiB             15.26 GiB             13.49 GiB
+
+=== 3. KV-cache size (bf16/fp16 = 2 bytes/elem, batch 1) ===
+context                         Qwen3-0.6B            Qwen3-1.7B              Qwen3-8B       Mistral-7B-v0.1
+per token                        112.0 KiB             112.0 KiB             144.0 KiB             128.0 KiB
+2048 tokens                      0.219 GiB             0.219 GiB             0.281 GiB             0.250 GiB
+8192 tokens                      0.875 GiB             0.875 GiB             1.125 GiB             1.000 GiB
+32768 tokens                     3.500 GiB             3.500 GiB             4.500 GiB             4.000 GiB
+(if MHA, 32K)                    7.000 GiB             7.000 GiB            18.000 GiB            16.000 GiB
+Formula: bytes/token = 2 (K,V) x layers x kv_heads x head_dim x bytes_per_elem
+
+=== 4. Tokenization example (Qwen3 tokenizer) ===
+text   : 'The KV cache makes autoregressive decoding at TUM München fast.'
+#tokens: 14  (chars: 63)
+ids    : [785, 84648, 6500, 3643, 3078, 460, 46719, 47116, 518, 350, 2794, 89266, 4937, 13]
+pieces : ['The', ' KV', ' cache', ' makes', ' aut', 'ore', 'gressive', ' decoding', ' at', ' T', 'UM', ' München', ' fast', '.']
+tokenizer vocab (len(tok)) = 151669  vs  config vocab_size = 151936 (embedding matrix is padded)
+chat template renders as:
+<|im_start|>user
+What is a KV cache?<|im_end|>
+<|im_start|>assistant
+

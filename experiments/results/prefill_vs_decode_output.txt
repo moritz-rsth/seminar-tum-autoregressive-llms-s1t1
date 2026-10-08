@@ -1,0 +1,38 @@
+torch 2.14.0 | device=mps | dtype=torch.bfloat16 | arm64 macOS-26.6.2-arm64-arm-64bit-Mach-O
+model loaded in 3.1s | attn_implementation=sdpa
+parameters (actual, tied embeddings counted once): 596.0 M
+config: layers=28 q_heads=16 kv_heads=8 head_dim=128 hidden=1024
+
+=== 1. Prefill (one forward pass over the whole prompt, builds KV cache) ===
+prompt_len  prefill_ms     tok/s   TTFT_ms  ms/token
+        16        41.5       385      41.4     2.596
+        64        68.0       941      68.4     1.063
+       128       109.3      1171     107.5     0.854
+       256       189.1      1353     189.1     0.739
+       512       339.2      1510     339.4     0.662
+      1024       674.0      1519     675.8     0.658
+      2048      1450.0      1412    1451.6     0.708
+      4096      3537.4      1158    3561.7     0.864
+
+=== 2. KV cache after prefilling a 100-token prompt ===
+cache type: DynamicCache, layers: 28
+  layer  0: K (1, 8, 100, 128)  V (1, 8, 100, 128)  dtype=torch.bfloat16
+  layer  1: K (1, 8, 100, 128)  V (1, 8, 100, 128)  dtype=torch.bfloat16
+  layer 27: K (1, 8, 100, 128)  V (1, 8, 100, 128)  dtype=torch.bfloat16
+  shape = (batch, num_kv_heads=8, seq_len, head_dim=128); the model has 16 query heads -> each KV head is shared by 2 query heads (GQA)
+  total KV bytes for 100 tokens = 11200 KiB -> 112.0 KiB/token (formula 2*L*KV*hd*2B = 112.0 KiB)
+
+=== 3. Greedy decoding: prompt 256 tokens, 256 new tokens ===
+greedy outputs identical with/without cache: True (first 256/256 tokens match)
+  (bf16 kernels for 1-token vs full-sequence shapes can differ in the last bit; small divergence late is benign)
+generated text (with cache): ' During prefill the whole prompt is processed in parallel and the keys and values of every layer are stored in the KV cache. During decoding each new token attends to all cached keys and values. Large'
+WITH cache     prefill   191.4 ms | step first10   27.9 ms  last10   30.5 ms | median   28.2 ms | decode   35.2 tok/s | total  7.43 s
+WITHOUT cache  prefill   207.8 ms | step first10  204.2 ms  last10  339.3 ms | median  256.0 ms | decode    3.8 tok/s | total 67.78 s
+model.generate(): 256 tokens in 7.57s -> 33.8 tok/s end-to-end (incl. prefill)
+
+weights = 1.11 GiB; each decode step must stream all of them -> effective 42 GB/s at 28.2 ms/step (M1 Pro peak ~200 GB/s)
+prefill peak 1519 tok/s (n=1024) vs cached decode 35 tok/s -> 43x
+
+saved results.json
+saved prefill_vs_length.png, decode_latency.png
+.venv/bin/python prefill_vs_decode.py  13.50s user 4.10s system 12% cpu 2:18.60 total

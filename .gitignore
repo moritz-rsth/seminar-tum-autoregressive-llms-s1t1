@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+hf_cache/
+.DS_Store
+node_modules/
+deck-src/.s1t1_math.html

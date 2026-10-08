@@ -1,0 +1,20 @@
+
+=== Mistral architecture, sliding window 1024 | mps torch.bfloat16 | attn=sdpa ===
+ context  prefill_ms  ms/token  decode_ms  KV kept
+     256       198.5     0.775       24.6      256
+     512       340.5     0.665       24.7      512
+    1024       761.4     0.744       42.0     1023
+    2048      1783.8     0.871       39.8     1023
+    4096      4881.8     1.192       41.0     1023
+    8192     14988.9     1.830       40.9     1023
+
+=== Mistral architecture, full attention | mps torch.bfloat16 | attn=sdpa ===
+ context  prefill_ms  ms/token  decode_ms  KV kept
+     256       181.5     0.709       23.9      256
+     512       325.4     0.636       26.0      512
+    1024       646.4     0.631       27.8     1024
+    2048      1395.7     0.681       28.6     2048
+    4096      3416.3     0.834       32.6     4096
+    8192     10230.7     1.249       48.3     8192
+
+saved sliding_window_results.json, sliding_window.png
